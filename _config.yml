@@ -1,0 +1,11 @@
+title: Renamatic
+description: A small macOS app for renaming a batch of video files while watching them.
+theme: minima
+
+minima:
+  skin: auto
+
+show_excerpts: false
+
+url: "https://deskrabbits.github.io"
+baseurl: "/renamatic"
