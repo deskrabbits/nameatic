@@ -3,7 +3,7 @@ import AppKit
 import Sparkle
 
 @main
-struct RenamaticApp: App {
+struct NameaticApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     private var store = BatchStore.shared
     private let updaterController = SPUStandardUpdaterController(
@@ -11,7 +11,7 @@ struct RenamaticApp: App {
     )
 
     var body: some Scene {
-        Window("Renamatic", id: "main") {
+        Window("Nameatic", id: "main") {
             RootView()
                 .environment(store)
                 .onOpenURL { store.add(urls: [$0]) }

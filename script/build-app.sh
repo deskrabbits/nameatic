@@ -1,5 +1,5 @@
 #!/bin/bash
-# Builds Renamatic.app into build/ from the SwiftPM executable.
+# Builds Nameatic.app into build/ from the SwiftPM executable.
 #
 #   script/build-app.sh              debug/dev build, ad-hoc signed
 #   script/build-app.sh release      release build, ad-hoc signed
@@ -8,8 +8,8 @@
 # --release expects:
 #   DEV_ID_IDENTITY   env var, e.g. "Developer ID Application: Your Name (TEAMID)"
 #                     (put it in a gitignored .env at the repo root, or export it yourself)
-#   a notarytool keychain profile named "renamatic-notary"
-#   (create once with: xcrun notarytool store-credentials renamatic-notary)
+#   a notarytool keychain profile named "nameatic-notary"
+#   (create once with: xcrun notarytool store-credentials nameatic-notary)
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -19,7 +19,7 @@ if [ -f .env ]; then
   set +a
 fi
 
-NOTARY_PROFILE="renamatic-notary"
+NOTARY_PROFILE="nameatic-notary"
 
 NOTARIZE=0
 CONFIG="${1:-release}"
@@ -31,11 +31,11 @@ fi
 
 swift build -c "$CONFIG"
 
-APP="build/Renamatic.app"
+APP="build/Nameatic.app"
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources" "$APP/Contents/Frameworks"
 
-cp ".build/$CONFIG/Renamatic" "$APP/Contents/MacOS/Renamatic"
+cp ".build/$CONFIG/Nameatic" "$APP/Contents/MacOS/Nameatic"
 cp Resources/Info.plist "$APP/Contents/"
 if [ -f Icon/AppIcon.icns ]; then
   cp Icon/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
@@ -54,7 +54,7 @@ if [ "$NOTARIZE" = "1" ]; then
     --sign "$DEV_ID_IDENTITY" "$APP"
   echo "Signed with: $DEV_ID_IDENTITY"
 
-  ZIP="build/Renamatic.zip"
+  ZIP="build/Nameatic.zip"
   rm -f "$ZIP"
   ditto -c -k --keepParent "$APP" "$ZIP"
   echo "Submitting to Apple notary service (waits for the result)…"
@@ -63,7 +63,7 @@ if [ "$NOTARIZE" = "1" ]; then
   rm -f "$ZIP"
 
   # re-zip the stapled app as the distributable artifact
-  ditto -c -k --keepParent "$APP" "build/Renamatic-$(defaults read "$PWD/$APP/Contents/Info" CFBundleShortVersionString).zip"
+  ditto -c -k --keepParent "$APP" "build/Nameatic-$(defaults read "$PWD/$APP/Contents/Info" CFBundleShortVersionString).zip"
   spctl --assess --type execute "$APP" && echo "Gatekeeper: accepted"
 else
   codesign --force --deep --sign - "$APP"
