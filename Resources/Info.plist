@@ -2,38 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CFBundleName</key>
-	<string>Nameatic</string>
 	<key>CFBundleDisplayName</key>
 	<string>Nameatic</string>
-	<key>CFBundleIdentifier</key>
-	<string>com.deskrabbits.nameatic</string>
-	<key>CFBundleExecutable</key>
-	<string>Nameatic</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>CFBundleShortVersionString</key>
-	<string>0.1.0</string>
-	<key>CFBundleVersion</key>
-	<string>1</string>
-	<key>CFBundleIconFile</key>
-	<string>AppIcon</string>
-	<key>LSMinimumSystemVersion</key>
-	<string>26.0</string>
-	<key>LSApplicationCategoryType</key>
-	<string>public.app-category.video</string>
-	<key>NSHighResolutionCapable</key>
-	<true/>
-	<key>NSPrincipalClass</key>
-	<string>NSApplication</string>
-	<key>SUFeedURL</key>
-	<string>https://deskrabbits.github.io/nameatic/appcast.xml</string>
-	<key>SUPublicEDKey</key>
-	<string>LFXUuXTTeLVVBWAF9IO9fgWei2vQkFuo3fsx+lnHCJ8=</string>
-	<key>SUEnableAutomaticChecks</key>
-	<true/>
-	<key>SUScheduledCheckInterval</key>
-	<integer>86400</integer>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -49,5 +19,35 @@
 			</array>
 		</dict>
 	</array>
+	<key>CFBundleExecutable</key>
+	<string>Nameatic</string>
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.deskrabbits.nameatic</string>
+	<key>CFBundleName</key>
+	<string>Nameatic</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleVersion</key>
+	<string>2</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.video</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>26.0</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
+	<key>SUFeedURL</key>
+	<string>https://deskrabbits.github.io/nameatic/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>LFXUuXTTeLVVBWAF9IO9fgWei2vQkFuo3fsx+lnHCJ8=</string>
+	<key>SUScheduledCheckInterval</key>
+	<integer>86400</integer>
 </dict>
 </plist>
