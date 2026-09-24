@@ -168,7 +168,7 @@ git -C "$PAGES" merge -q --ff-only origin/gh-pages || die "gh-pages has diverged
 
 # Splice the new <item> in as the newest entry, keeping existing entries as-is.
 python3 - "$WORK/appcast/appcast.xml" "$PAGES/appcast.xml" "$BUILD" <<'PY'
-import re, sys
+import re, sys, textwrap
 new_path, feed_path, build = sys.argv[1:]
 item = re.search(r"[ \t]*<item>.*?</item>\n", open(new_path).read(), re.S)
 if not item:
@@ -176,8 +176,20 @@ if not item:
 feed = open(feed_path).read()
 if f"<sparkle:version>{build}</sparkle:version>" in feed:
     sys.exit(f"appcast already has an entry for build {build}")
+# generate_appcast indents with 4 spaces per level, the feed with 2; halve the
+# indentation of every line outside the release notes' CDATA block.
+text, in_cdata = "", False
+for line in item.group(0).splitlines(keepends=True):
+    if not in_cdata:
+        stripped = line.lstrip(" ")
+        line = " " * ((len(line) - len(stripped)) // 2) + stripped
+    if "<![CDATA[" in line:
+        in_cdata = True
+    if "]]>" in line:
+        in_cdata = False
+    text += line
 anchor = re.search(r"[ \t]*<item>", feed) or re.search(r"[ \t]*</channel>", feed)
-feed = feed[:anchor.start()] + item.group(0) + feed[anchor.start():]
+feed = feed[:anchor.start()] + text + feed[anchor.start():]
 open(feed_path, "w").write(feed)
 PY
 
