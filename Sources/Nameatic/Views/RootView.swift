@@ -8,6 +8,7 @@ struct RootView: View {
         Group {
             switch store.step {
             case .builder: BuilderScreen()
+            case .preparing: PreparingBatchView()
             case .rename: RenameScreen()
             }
         }

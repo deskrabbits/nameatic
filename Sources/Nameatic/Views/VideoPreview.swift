@@ -22,7 +22,10 @@ final class PlayerController {
         }
     }
 
-    func show(url: URL?) {
+    /// - Parameter volume: playback volume leveled to match the batch's
+    ///   reference clip (see `BatchStore`'s audio analysis).
+    func show(url: URL?, volume: Float) {
+        player.volume = volume
         guard url != currentURL else { return }
         currentURL = url
         looper = nil
@@ -31,6 +34,12 @@ final class PlayerController {
             looper = AVPlayerLooper(player: player, templateItem: AVPlayerItem(url: url))
             player.play()
         }
+    }
+
+    /// Applies an updated volume without reloading the current clip — used
+    /// when its analyzed level arrives after playback already started.
+    func setVolume(_ volume: Float) {
+        player.volume = volume
     }
 
     func togglePlayback() {

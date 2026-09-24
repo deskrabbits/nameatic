@@ -13,6 +13,13 @@ final class BatchFile: Identifiable {
     var duration: TimeInterval?
     var thumbnail: CGImage?
 
+    /// Average loudness of this clip's audio, in dBFS. Nil until analyzed.
+    var audioLevelDB: Float?
+    /// Volume to play this clip at so it roughly matches the batch's
+    /// reference level. Nil until analyzed (playback falls back to
+    /// `BatchStore.referenceVolume` in the meantime).
+    var playbackVolume: Float?
+
     init(url: URL) {
         self.url = url
         self.originalName = url.lastPathComponent

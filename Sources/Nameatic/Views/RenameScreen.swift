@@ -31,7 +31,7 @@ struct RenameScreen: View {
         }
         .background(Color(nsColor: .windowBackgroundColor))
         .onAppear {
-            playerController.show(url: store.currentFile?.url)
+            playerController.show(url: store.currentFile?.url, volume: currentVolume)
             installKeyMonitor()
         }
         .onDisappear {
@@ -39,11 +39,22 @@ struct RenameScreen: View {
             removeKeyMonitor()
         }
         .onChange(of: store.selectedIndex) {
-            playerController.show(url: store.currentFile?.url)
+            playerController.show(url: store.currentFile?.url, volume: currentVolume)
         }
         .onChange(of: store.currentFile?.url) {
-            playerController.show(url: store.currentFile?.url)
+            playerController.show(url: store.currentFile?.url, volume: currentVolume)
         }
+        .onChange(of: store.currentFile?.playbackVolume) {
+            // The current clip's analyzed level arrived after playback
+            // already started — apply it without reloading the item.
+            playerController.setVolume(currentVolume)
+        }
+    }
+
+    /// Falls back to the reference volume while a clip's level is still
+    /// being analyzed, so playback never sits at full, unleveled volume.
+    private var currentVolume: Float {
+        store.currentFile?.playbackVolume ?? BatchStore.referenceVolume
     }
 
     // MARK: - Sidebar

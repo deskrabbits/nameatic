@@ -3,6 +3,7 @@ import UniformTypeIdentifiers
 
 enum Step {
     case builder
+    case preparing
     case rename
 }
 
@@ -17,6 +18,21 @@ final class BatchStore {
     var renameError: RenameError?
     /// Bumped whenever the rename field should grab focus and select all.
     var focusRequest = 0
+
+    // MARK: - Audio leveling
+
+    /// Baseline volume for the batch's reference clip (the first file).
+    /// Kept below 1.0 so quieter clips have headroom to be boosted up to
+    /// match it, not just louder clips turned down.
+    static let referenceVolume: Float = 0.7
+    private static let minVolume: Float = 0.05
+    /// How many files ahead of the current selection to keep pre-analyzed.
+    private static let prefetchDepth = 3
+
+    private var referenceAudioLevelDB: Float?
+    private var audioAnalysisQueue: [UUID] = []
+    private var audioAnalysisQueued: Set<UUID> = []
+    private var isProcessingAudioQueue = false
 
     struct RenameError: Identifiable {
         let id = UUID()
@@ -69,8 +85,24 @@ final class BatchStore {
     func startRenaming() {
         guard !files.isEmpty else { return }
         selectedIndex = 0
+        step = .preparing
+        Task { await beginRenaming() }
+    }
+
+    /// Analyzes the reference (first) clip's loudness before the rename
+    /// screen appears, then hands off to the background prefetch queue.
+    private func beginRenaming() async {
+        let reference = files[0]
+        if reference.audioLevelDB == nil {
+            reference.audioLevelDB = await AudioLevelAnalyzer.analyzeAverageLevel(url: reference.url)
+        }
+        referenceAudioLevelDB = reference.audioLevelDB
+        reference.playbackVolume = Self.referenceVolume
+
+        guard step == .preparing else { return }
         step = .rename
         focusRequest += 1
+        queueAudioAnalysis(around: 0)
     }
 
     func backToBuilder() {
@@ -82,12 +114,67 @@ final class BatchStore {
         files = []
         selectedIndex = 0
         step = .builder
+        referenceAudioLevelDB = nil
+        audioAnalysisQueue = []
+        audioAnalysisQueued = []
     }
 
     func select(_ index: Int) {
         guard files.indices.contains(index) else { return }
         selectedIndex = index
         focusRequest += 1
+        queueAudioAnalysis(around: index)
+    }
+
+    // MARK: - Audio leveling
+
+    /// Keeps the current clip and the next few pre-analyzed so playback
+    /// volume is already known by the time the user reaches them.
+    private func queueAudioAnalysis(around index: Int) {
+        guard referenceAudioLevelDB != nil, files.indices.contains(index) else { return }
+
+        let current = files[index]
+        if current.audioLevelDB == nil {
+            // The clip on screen right now takes priority over anything queued.
+            audioAnalysisQueue.removeAll { $0 == current.id }
+            audioAnalysisQueue.insert(current.id, at: 0)
+            audioAnalysisQueued.insert(current.id)
+        }
+
+        let upper = min(files.count - 1, index + Self.prefetchDepth)
+        if index + 1 <= upper {
+            for i in (index + 1)...upper {
+                let file = files[i]
+                guard file.audioLevelDB == nil, !audioAnalysisQueued.contains(file.id) else { continue }
+                audioAnalysisQueued.insert(file.id)
+                audioAnalysisQueue.append(file.id)
+            }
+        }
+
+        processAudioQueueIfNeeded()
+    }
+
+    private func processAudioQueueIfNeeded() {
+        guard !isProcessingAudioQueue else { return }
+        isProcessingAudioQueue = true
+        Task {
+            while !audioAnalysisQueue.isEmpty {
+                let id = audioAnalysisQueue.removeFirst()
+                audioAnalysisQueued.remove(id)
+                guard let file = files.first(where: { $0.id == id }) else { continue }
+                let level = await AudioLevelAnalyzer.analyzeAverageLevel(url: file.url)
+                file.audioLevelDB = level
+                file.playbackVolume = playbackVolume(for: level)
+            }
+            isProcessingAudioQueue = false
+        }
+    }
+
+    private func playbackVolume(for levelDB: Float?) -> Float {
+        guard let levelDB, let reference = referenceAudioLevelDB else { return 1.0 }
+        let deltaDB = reference - levelDB // positive when this clip is quieter than the reference
+        let gain = Self.referenceVolume * pow(10, deltaDB / 20)
+        return min(1.0, max(Self.minVolume, gain))
     }
 
     func moveSelection(by delta: Int) {
@@ -109,6 +196,7 @@ final class BatchStore {
         } else {
             clampSelection()
             focusRequest += 1
+            queueAudioAnalysis(around: selectedIndex)
         }
     }
 
