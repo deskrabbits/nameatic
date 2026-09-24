@@ -24,6 +24,18 @@ open build/Nameatic.app
 
 Launch with files: `open -a build/Nameatic.app *.mov`
 
+## Releasing
+
+```sh
+script/release.sh            # prompts for the version and release notes
+script/release.sh minor      # or: 1.2, major, patch; --dry-run to skip publishing
+```
+
+Bumps `Info.plist`, builds a notarized app, tags and pushes `main`, publishes the
+GitHub release, and adds the update to `appcast.xml` on `gh-pages`. Needs the
+`.env` / notarytool setup described in `script/build-app.sh`, a logged-in `gh`,
+and the Sparkle EdDSA key in the login keychain.
+
 ## Layout
 
 - `Sources/Nameatic/Models` — `BatchFile`, `BatchStore` (state + on-disk rename)
@@ -31,5 +43,5 @@ Launch with files: `open -a build/Nameatic.app *.mov`
   rename field, chromeless AVPlayerLayer preview
 - `Sources/Nameatic/Media` — async duration/thumbnail loading
 
-The GitHub Pages site (Jekyll) and the Sparkle `appcast.xml` feed live on the
+The GitHub Pages site and the Sparkle `appcast.xml` feed live on the
 `gh-pages` branch, not `main`.

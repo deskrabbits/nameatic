@@ -8,7 +8,7 @@
 # --release expects:
 #   DEV_ID_IDENTITY   env var, e.g. "Developer ID Application: Your Name (TEAMID)"
 #                     (put it in a gitignored .env at the repo root, or export it yourself)
-#   a notarytool keychain profile named "nameatic-notary"
+#   a notarytool keychain profile, "nameatic-notary" unless NOTARY_PROFILE says otherwise
 #   (create once with: xcrun notarytool store-credentials nameatic-notary)
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -19,7 +19,7 @@ if [ -f .env ]; then
   set +a
 fi
 
-NOTARY_PROFILE="nameatic-notary"
+NOTARY_PROFILE="${NOTARY_PROFILE:-nameatic-notary}"
 
 NOTARIZE=0
 CONFIG="${1:-release}"
