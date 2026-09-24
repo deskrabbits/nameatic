@@ -1,5 +1,5 @@
 title: Nameatic
-description: A small macOS app for renaming a batch of video files while watching them.
+description: Rename a whole folder of videos without touching the mouse.
 theme: minima
 
 minima:
@@ -8,4 +8,4 @@ minima:
 show_excerpts: false
 
 url: "https://deskrabbits.github.io"
-baseurl: "/renamatic"
+baseurl: "/nameatic"

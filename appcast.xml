@@ -1,11 +1,10 @@
 <?xml version="1.0" standalone="yes"?>
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
-    <title>Renamatic Changelog</title>
-    <link>https://deskrabbits.github.io/renamatic/appcast.xml</link>
-    <description>Updates to Renamatic.</description>
+    <title>Nameatic Changelog</title>
+    <link>https://deskrabbits.github.io/nameatic/appcast.xml</link>
+    <description>Updates to Nameatic.</description>
     <language>en</language>
-    <!-- Items are added by `generate_appcast` (from the Sparkle SPM
-         artifact) against signed release builds. See script/build-app.sh. -->
+    <!-- Items are added by script/release.sh on the main branch. -->
   </channel>
 </rss>
