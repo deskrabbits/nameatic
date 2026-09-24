@@ -6,5 +6,27 @@
     <description>Updates to Nameatic.</description>
     <language>en</language>
     <!-- Items are added by script/release.sh on the main branch. -->
+    <item>
+      <title>1.0</title>
+      <pubDate>Wed, 23 Sep 2026 21:13:28 -0700</pubDate>
+      <link>https://deskrabbits.github.io/nameatic/</link>
+      <sparkle:version>2</sparkle:version>
+      <sparkle:shortVersionString>1.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+      <description sparkle:format="markdown"><![CDATA[Nameatic's first release.
+
+- Drag in a batch of videos, then rename them one by one while each
+  clip plays: type a name, press Return, and the next clip starts.
+- ↑ / ↓ move through the batch without saving; ⌘⌫ moves a clip to
+  the Trash. File extensions are kept for you.
+- Audio is leveled across the batch, so quiet and loud clips play
+  at roughly the same volume.
+- Smooth playback with AirPods and other Bluetooth headphones.
+
+Requires macOS 26 Tahoe on an Apple silicon Mac.
+]]></description>
+      <enclosure url="https://github.com/deskrabbits/nameatic/releases/download/v1.0/Nameatic-1.0.zip" length="2838084" type="application/octet-stream" sparkle:edSignature="8r2J/UZOhI3IUQHQu/JEE6G4lN1VeZGOOH2SF2ddEaXNujMSq39XHZ7VUvp1LW3Lyez+589ysMoyhvX+zJzMBA=="/>
+    </item>
   </channel>
 </rss>
